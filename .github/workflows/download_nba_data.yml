@@ -1,0 +1,31 @@
+name: Download NBA Dataset Daily
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # Runs daily at 7 AM Sydney time (UTC+10)
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  download_dataset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Kaggle CLI
+        run: pip install kaggle
+
+      - name: Create kaggle.json from GitHub Secret
+        run: |
+          mkdir -p ~/.kaggle
+          echo "${{ secrets.KAGGLE_JSON }}" > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      - name: Download NBA Dataset
+        run: kaggle datasets download -d eoinamoore/historical-nba-data-and-player-box-scores --unzip -p nba_dataset
