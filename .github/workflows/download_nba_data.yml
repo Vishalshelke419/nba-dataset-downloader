@@ -5,9 +5,6 @@ on:
     - cron: '0 21 * * *'  # Runs daily at 7 AM Sydney time (UTC+10)
   workflow_dispatch:      # Allows manual triggering
 
-
-
-
 jobs:
   download_dataset:
     runs-on: ubuntu-latest
@@ -23,9 +20,6 @@ jobs:
 
       - name: Install Kaggle CLI
         run: pip install kaggle
-        
-      - name: Show kaggle.json content (DEBUG)
-        run: cat ~/.kaggle/kaggle.json
 
       - name: Create kaggle.json from GitHub Secret
         run: |
@@ -33,6 +27,9 @@ jobs:
           echo "${{ secrets.KAGGLE_JSON }}" > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
+      # (Optional) Debug after creation
+      - name: Show kaggle.json content (DEBUG)
+        run: cat ~/.kaggle/kaggle.json
 
       - name: Download NBA Dataset
         run: kaggle datasets download -d eoinamoore/historical-nba-data-and-player-box-scores --unzip -p nba_dataset
